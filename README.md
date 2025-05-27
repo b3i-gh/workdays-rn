@@ -89,7 +89,6 @@ A mobile application for freelancers to track working days, expenses, and taxes 
 4. **Data Backup**
    - Go to "Settings"
    - Use "Export Backup" to save data in JSON format
-   - Use "Export as CSV" to export in Excel format
    - Use "Restore from Backup" to restore data
 
 ## License
