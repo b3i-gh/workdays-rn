@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "workdays-exporouter-rn",
+    "name": "workdays",
     "slug": "workdays-exporouter-rn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "workdaysexporouterrn",
+    "scheme": "workday",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.b3i.workdays"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7828068e-ac57-4fd0-bec0-cbec18f41cab"
+      }
     }
   }
 }

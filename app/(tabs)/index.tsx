@@ -1,75 +1,124 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { format } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Calendar, DateData } from "react-native-calendars";
+import { useGlobalState, WorkDay } from "../GlobalStateProvider";
 
 export default function HomeScreen() {
+  const { workDays, setWorkDays, yearlyStats } = useGlobalState();
+  const [selectedMonth, setSelectedMonth] = useState(
+    format(new Date(), "yyyy-MM")
+  );
+
+  const startingMonth = parseInt(selectedMonth.split("-")[1], 10) - 1;
+  const [monthlyStats, setMonthlyStats] = useState(
+    yearlyStats.ms[startingMonth]
+  );
+
+  useEffect(() => {
+    const selectedMonthIndex = parseInt(selectedMonth.split("-")[1], 10) - 1;
+    const updatedMonthlyStats = yearlyStats.ms[selectedMonthIndex];
+    setMonthlyStats(updatedMonthlyStats);
+  }, [selectedMonth, yearlyStats]);
+
+  const handleDayPress = (day: DateData) => {
+    const dateStr = day.dateString;
+    setWorkDays((prev: WorkDay) => {
+      const updated = { ...prev };
+      if (updated[dateStr]) {
+        delete updated[dateStr];
+      } else {
+        updated[dateStr] = true;
+      }
+      return updated;
+    });
+  };
+
+  const markedDates = Object.keys(workDays).reduce((acc, date) => {
+    acc[date] = { selected: true, marked: true, selectedColor: "#4caf50" };
+    return acc;
+  }, {} as any);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <SafeAreaView style={styles.safearea}>
+      <Text style={styles.title}>Month Recap</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Calendar
+          firstDay={1}
+          onDayPress={handleDayPress}
+          markedDates={markedDates}
+          enableSwipeMonths
+          current={selectedMonth}
+          onMonthChange={(currentMonth: { year: any; month: any }) => {
+            const newMonth = `${currentMonth.year}-${String(
+              currentMonth.month
+            ).padStart(2, "0")}`;
+            setSelectedMonth(newMonth);
+          }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <View style={styles.stats}>
+          <Text style={styles.statText}>
+            ✅ Days Worked: {monthlyStats.daysWorked}
+          </Text>
+          <Text style={styles.statText}>
+            💰 Gross: €{monthlyStats.totalGross.toFixed(2)}
+          </Text>
+          <Text style={styles.statText}>
+            📉 Reddito Imponibile: €{monthlyStats.redditoImponibile.toFixed(2)}
+          </Text>
+          <Text style={styles.statText}>
+            🧾 Imposta Sostitutiva (5%): €
+            {monthlyStats.impostaSostitutiva.toFixed(2)}
+          </Text>
+          <Text style={styles.statText}>
+            🧾 Contributi INPS (26.07%): €
+            {monthlyStats.contributiInps.toFixed(2)}
+          </Text>
+          <Text style={styles.statText}>
+            💸 Totale Tasse: €
+            {(
+              monthlyStats.impostaSostitutiva + monthlyStats.contributiInps
+            ).toFixed(2)}
+          </Text>
+          <Text style={styles.statText}>
+            💵 Net: €{monthlyStats.net.toFixed(2)}
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  safearea: {
+    backgroundColor: "#fff",
+    paddingTop: 50,
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
+  container: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  summary: {
+    marginVertical: 20,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: "#f1f1f1",
+  },
+  stats: {
+    marginTop: 30,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: "#f1f1f1",
+  },
+  statText: {
+    fontSize: 16,
     marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
 });

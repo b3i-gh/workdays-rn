@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="512" cy="512" r="512" fill="#2196F3"/>
+  
+  <!-- Calendar outline -->
+  <rect x="256" y="256" width="512" height="512" rx="64" stroke="white" stroke-width="32" fill="none"/>
+  
+  <!-- Calendar lines -->
+  <line x1="256" y1="384" x2="768" y2="384" stroke="white" stroke-width="32"/>
+  <line x1="384" y1="256" x2="384" y2="768" stroke="white" stroke-width="32"/>
+  <line x1="640" y1="256" x2="640" y2="768" stroke="white" stroke-width="32"/>
+  
+  <!-- Euro symbol -->
+  <path d="M512 384C512 384 512 512 512 512C512 512 512 640 512 640" stroke="white" stroke-width="32"/>
+  <path d="M448 384C448 384 576 384 576 384" stroke="white" stroke-width="32"/>
+  <path d="M448 512C448 512 576 512 576 512" stroke="white" stroke-width="32"/>
+  <path d="M448 640C448 640 576 640 576 640" stroke="white" stroke-width="32"/>
+</svg> 

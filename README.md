@@ -1,50 +1,101 @@
-# Welcome to your Expo app 👋
+# Workdays Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile application for freelancers to track working days, expenses, and taxes under the Italian "Regime Forfettario" tax system.
 
-## Get started
+## Key Features
 
-1. Install dependencies
+### 📅 Working Days Management
 
-   ```bash
+- Interactive calendar to mark worked days
+- Monthly view with real-time statistics
+- Automatic gross income calculation based on a fixed daily rate
+
+### 💰 Tax Calculations (Italian Forfettario)
+
+- Automatic taxable income calculation (78% of revenue)
+- Substitute tax calculation (5%)
+- INPS contributions calculation (26.07%)
+- Estimated net income display
+
+### 💸 Expense Management
+
+- Record expenses with date, description, and amount
+- Automatic categorization of past and future expenses
+- Expense coverage indicator based on projected revenue
+- Warnings when projected expenses exceed available revenue
+
+### 📊 Reports and Statistics
+
+- Detailed yearly overview
+- Monthly statistics with worked days and amounts
+- Progressive totals of revenue, taxes, and net income
+- Past and future expense monitoring
+
+### 📤 Backup and Export
+
+- Complete backup export in JSON format
+- Data restoration from JSON backup
+
+## Technical Details
+
+### Tax Calculations
+
+- Revenue coefficient: 78%
+- Substitute tax rate: 5%
+- INPS contribution rate: 26.07%
+
+### Technology Stack
+
+- React Native with Expo Router
+- TypeScript for type safety
+- AsyncStorage for data persistence
+- Context API for global state management
+
+## Getting Started
+
+1. Install dependencies:
+
+   ```powershell
    npm install
    ```
 
-2. Start the app
+2. Start the application:
 
-   ```bash
+   ```powershell
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. Use Expo Go on your device or an emulator to test the application
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Daily Usage
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. **Recording Working Days**
 
-## Get a fresh project
+   - Open the "Month Recap" tab
+   - Tap days in the calendar to mark them as worked
+   - View monthly tax calculations instantly
 
-When you're ready, run:
+2. **Managing Expenses**
 
-```bash
-npm run reset-project
-```
+   - Go to the "Expenses Coverage" tab
+   - Use the "Add Expense" button to record new expenses
+   - Monitor future expense coverage
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3. **Yearly Analysis**
 
-## Learn more
+   - Use the "Year Recap" tab to see the annual summary
+   - Check progressive totals and monthly statistics
 
-To learn more about developing your project with Expo, look at the following resources:
+4. **Data Backup**
+   - Go to "Settings"
+   - Use "Export Backup" to save data in JSON format
+   - Use "Export as CSV" to export in Excel format
+   - Use "Restore from Backup" to restore data
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## License
 
-## Join the community
+This project is open-source and available under the MIT License.
 
-Join our community of developers creating universal apps.
+## Contributing
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Feel free to open issues or submit pull requests if you'd like to contribute to the project.
