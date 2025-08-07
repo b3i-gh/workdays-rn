@@ -91,10 +91,18 @@ A mobile application for freelancers to track working days, expenses, and taxes 
    - Use "Export Backup" to save data in JSON format
    - Use "Restore from Backup" to restore data
 
-## License
+## Changelog 
 
-This project is open-source and available under the MIT License.
+### v1.1.0
 
-## Contributing
+- modified the backup file name to workdays-backup-
+- improved the format of income and tax values in the year recap
+- in the year recap the paid months (more than 60 day passed) are marked
+- renamed the expense coverage tab and all the labels to represent savings
+- savings can be inserted with decimal values
+- tax savings are now managed separately from the other savings
+- savings now manages many types (long term, short term, etc) and have different target based con the total income
 
-Feel free to open issues or submit pull requests if you'd like to contribute to the project.
+## Future implementations
+
+- v2.0.0 manage taxes payments

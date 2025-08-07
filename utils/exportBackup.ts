@@ -5,7 +5,7 @@ import { loadData, STORAGE_KEYS } from "./storage";
 export const exportBackup = async () => {
   try {
     const workDays = (await loadData(STORAGE_KEYS.workDays)) ?? {};
-    const expenses = (await loadData(STORAGE_KEYS.expenses)) ?? [];
+    const expenses = (await loadData(STORAGE_KEYS.savings)) ?? [];
 
     // Filter out days with false values
     const filteredWorkDays = Object.entries(workDays).reduce(
@@ -26,7 +26,7 @@ export const exportBackup = async () => {
 
     const json = JSON.stringify(backupData, null, 2);
     const fileUri =
-      FileSystem.documentDirectory + `appiva-backup-${Date.now()}.json`;
+      FileSystem.documentDirectory + `workdays-backup-${Date.now()}.json`;
 
     await FileSystem.writeAsStringAsync(fileUri, json, {
       encoding: FileSystem.EncodingType.UTF8,

@@ -11,11 +11,12 @@ import { loadData, saveData, STORAGE_KEYS } from "../utils/storage";
 
 export type WorkDay = { [date: string]: boolean };
 
-export type Expense = {
+export type Saving = {
   id: string;
   description: string;
   payDate: string;
   amount: number;
+  type?: string; // Add optional type field for backward compatibility
 };
 export type MonthlyStats = {
   daysWorked: number;
@@ -33,9 +34,9 @@ export type YearlyStats = {
   totalGross: number;
   net: number;
   taxes: number;
-  totalExpenses: number;
-  pastExpensesAmount: number;
-  futureExpensesAmount: number;
+  totalSavings: number;
+  pastSavingsAmount: number;
+  futureSavingsAmount: number;
   // per il 2026 la gestione delle tasse deve cambiare con l'anticipo dell'anno al posto del saldo
 };
 
@@ -43,20 +44,20 @@ type GlobalState = {
   workDays: WorkDay;
   setWorkDays: React.Dispatch<React.SetStateAction<WorkDay>>;
 
-  expenses: Expense[];
-  setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
+  savings: Saving[];
+  setSavings: React.Dispatch<React.SetStateAction<Saving[]>>;
 
   yearlyStats: YearlyStats;
   setYearlyStats: React.Dispatch<React.SetStateAction<YearlyStats>>;
 
-  restoreFromBackup: (workDays: WorkDay, expenses: Expense[]) => void;
+  restoreFromBackup: (workDays: WorkDay, savings: Saving[]) => void;
 };
 
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
 export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   const [workDays, setWorkDays] = useState<WorkDay>({});
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [savings, setSavings] = useState<Saving[]>([]);
 
   const emptyMonthlyStats: MonthlyStats = {
     daysWorked: 0,
@@ -78,16 +79,16 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
     totalGross: 0,
     net: 0,
     taxes: 0,
-    totalExpenses: 0,
-    pastExpensesAmount: 0,
-    futureExpensesAmount: 0,
+    totalSavings: 0,
+    pastSavingsAmount: 0,
+    futureSavingsAmount: 0,
   });
 
   // Track if initial load is done
   const [initialized, setInitialized] = useState(false);
 
-  // Function to update stats based on workDays and expenses
-  const updateStats = (loadedWorkDays: WorkDay, loadedExpenses: Expense[]) => {
+  // Function to update stats based on workDays and savings
+  const updateStats = (loadedWorkDays: WorkDay, loadedSavings: Saving[]) => {
     // For each month, create a new MonthlyStats object based on the workDays
     let yDayWorked = 0;
     let yTotalGross = 0;
@@ -122,17 +123,17 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       });
     }
 
-    // Calculate expenses
-    let totalExpenses = 0;
-    let pastExpensesAmount = 0;
-    let futureExpensesAmount = 0;
-    for (const ex of loadedExpenses) {
+    // Calculate savings
+    let totalSavings = 0;
+    let pastSavingsAmount = 0;
+    let futureSavingsAmount = 0;
+    for (const ex of loadedSavings) {
       const payDate = new Date(ex.payDate);
-      totalExpenses += ex.amount;
+      totalSavings += ex.amount;
       if (payDate <= new Date()) {
-        pastExpensesAmount += ex.amount;
+        pastSavingsAmount += ex.amount;
       } else {
-        futureExpensesAmount += ex.amount;
+        futureSavingsAmount += ex.amount;
       }
     }
 
@@ -143,23 +144,23 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       totalGross: yTotalGross,
       net: yTotalNet,
       taxes: yTaxes,
-      totalExpenses: totalExpenses,
-      pastExpensesAmount: pastExpensesAmount,
-      futureExpensesAmount: futureExpensesAmount,
+      totalSavings: totalSavings,
+      pastSavingsAmount: pastSavingsAmount,
+      futureSavingsAmount: futureSavingsAmount,
     };
     setYearlyStats(ys);
   };
 
-  // Load workDays and expenses from storage on mount
+  // Load workDays and savings from storage on mount
   const onRestoreBackup = async () => {
     const loadedWorkDays = (await loadData(STORAGE_KEYS.workDays)) || {};
     setWorkDays(loadedWorkDays);
-    const loadedExpenses = await loadData(STORAGE_KEYS.expenses);
-    console.log("[DEBUG] loadedExpenses from storage: ", loadedExpenses);
-    setExpenses(Array.isArray(loadedExpenses) ? loadedExpenses : []);
+    const loadedSavings = await loadData(STORAGE_KEYS.savings);
+    console.log("[DEBUG] loadedSavings from storage: ", loadedSavings);
+    setSavings(Array.isArray(loadedSavings) ? loadedSavings : []);
     updateStats(
       loadedWorkDays,
-      Array.isArray(loadedExpenses) ? loadedExpenses : []
+      Array.isArray(loadedSavings) ? loadedSavings : []
     );
   };
 
@@ -171,19 +172,19 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!initialized) return;
-    updateStats(workDays, expenses);
+    updateStats(workDays, savings);
     saveData(STORAGE_KEYS.workDays, workDays); // save workDays
-    saveData(STORAGE_KEYS.expenses, expenses); // save expenses
-    console.log("[DEBUG] saving expenses:", expenses);
-  }, [workDays, expenses]);
+    saveData(STORAGE_KEYS.savings, savings); // save savings
+    console.log("[DEBUG] saving Savings:", savings);
+  }, [workDays, savings]);
 
   return (
     <GlobalStateContext.Provider
       value={{
         workDays,
         setWorkDays,
-        expenses,
-        setExpenses,
+        savings: savings,
+        setSavings: setSavings,
         yearlyStats,
         setYearlyStats,
         restoreFromBackup: onRestoreBackup,

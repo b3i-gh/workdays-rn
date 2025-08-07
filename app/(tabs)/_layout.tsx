@@ -46,9 +46,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="expensesScreen"
+        name="savingsScreen"
         options={{
-          title: "Expenses coverage",
+          title: "Savings",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="wallet.bifold" color={color} />
           ),

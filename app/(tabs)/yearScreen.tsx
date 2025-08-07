@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, endOfMonth, differenceInDays } from "date-fns";
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { calcTaxesFromGross } from "../../utils/finance";
@@ -11,6 +11,22 @@ type MonthSummary = {
   gross: number;
   net: number;
   taxes: number;
+};
+
+// Utility function to format currency with thousand separators
+const formatCurrency = (value: number): string => {
+  return `€${value.toLocaleString("it-IT", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
+
+// Utility function to check if month is more than 60 days old
+const isInvoicePaid = (monthStr: string): boolean => {
+  const lastDayOfMonth = endOfMonth(parseISO(monthStr + "-01"));
+  const today = new Date();
+  const daysDifference = differenceInDays(today, lastDayOfMonth);
+  return daysDifference > 60;
 };
 
 const YearScreen = () => {
@@ -69,7 +85,7 @@ const YearScreen = () => {
 
   return (
     <SafeAreaView style={styles.safearea}>
-      <Text style={styles.title}>Yearly Summary</Text>
+      <Text style={styles.title}>Year Recap</Text>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.rowHeader}>
           <Text style={styles.cell}>Month</Text>
@@ -79,22 +95,28 @@ const YearScreen = () => {
           <Text style={styles.cell}>Taxes</Text>
         </View>
         {summary.map((item) => (
-          <View key={item.month} style={styles.row}>
+          <View
+            key={item.month}
+            style={[
+              styles.row,
+              isInvoicePaid(item.month) ? styles.oldMonthRow : null,
+            ]}
+          >
             <Text style={styles.cell}>
               {format(parseISO(item.month + "-01"), "MMM yyyy")}
             </Text>
             <Text style={styles.cell}>{item.workedDays}</Text>
-            <Text style={styles.cell}>€{item.gross.toFixed(2)}</Text>
-            <Text style={styles.cell}>€{item.net.toFixed(2)}</Text>
-            <Text style={styles.cell}>€{item.taxes.toFixed(2)}</Text>
+            <Text style={styles.cell}>{formatCurrency(item.gross)}</Text>
+            <Text style={styles.cell}>{formatCurrency(item.net)}</Text>
+            <Text style={styles.cell}>{formatCurrency(item.taxes)}</Text>
           </View>
         ))}
         <View style={[styles.row, styles.totalRow]}>
           <Text style={styles.cell}>{total.month}</Text>
           <Text style={styles.cell}>{total.workedDays}</Text>
-          <Text style={styles.cell}>€{total.gross.toFixed(2)}</Text>
-          <Text style={styles.cell}>€{total.net.toFixed(2)}</Text>
-          <Text style={styles.cell}>€{total.taxes.toFixed(2)}</Text>
+          <Text style={styles.cell}>{formatCurrency(total.gross)}</Text>
+          <Text style={styles.cell}>{formatCurrency(total.net)}</Text>
+          <Text style={styles.cell}>{formatCurrency(total.taxes)}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -139,5 +161,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     textAlign: "center",
+  },
+  oldMonthRow: {
+    backgroundColor: "#e8f5e8", // Light green background for old months
   },
 });

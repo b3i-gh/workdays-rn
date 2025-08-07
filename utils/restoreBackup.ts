@@ -1,10 +1,10 @@
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import type { Expense, WorkDay } from "../app/GlobalStateProvider";
+import type { Saving, WorkDay } from "../app/GlobalStateProvider";
 import { clearAllData, saveData, STORAGE_KEYS } from "./storage";
 
 export const restoreBackup = async (
-  onRestore: (workDays: WorkDay, expenses: Expense[]) => void
+  onRestore: (workDays: WorkDay, expenses: Saving[]) => void
 ) => {
   try {
     const result = await DocumentPicker.getDocumentAsync({
@@ -29,7 +29,7 @@ export const restoreBackup = async (
 
     // Restore the backup data and update global state
     await saveData(STORAGE_KEYS.workDays, workDays);
-    await saveData(STORAGE_KEYS.expenses, expenses);
+    await saveData(STORAGE_KEYS.savings, expenses);
     onRestore(workDays, expenses);
 
     return true;
