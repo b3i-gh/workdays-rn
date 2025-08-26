@@ -34,10 +34,54 @@ export default function HomeScreen() {
     });
   };
 
+  // Calcola i giorni da evidenziare (60 giorni dopo l'ultimo giorno lavorato di ogni mese)
+  const highlightDates: Record<string, boolean> = {};
+  const workDaysByMonth: Record<string, string[]> = {};
+  Object.keys(workDays).forEach((date) => {
+    if (workDays[date]) {
+      const month = date.slice(0, 7); // yyyy-MM
+      if (!workDaysByMonth[month]) workDaysByMonth[month] = [];
+      workDaysByMonth[month].push(date);
+    }
+  });
+  Object.entries(workDaysByMonth).forEach(([month, dates]) => {
+    // Trova l'ultimo giorno lavorato del mese
+    const lastDay = dates.sort().slice(-1)[0];
+    if (lastDay) {
+      const highlightDate = format(
+        new Date(new Date(lastDay).getTime() + 60 * 24 * 60 * 60 * 1000),
+        "yyyy-MM-dd"
+      );
+      highlightDates[highlightDate] = true;
+    }
+  });
+
+  // Unisci i giorni lavorati e quelli da evidenziare
   const markedDates = Object.keys(workDays).reduce((acc, date) => {
     acc[date] = { selected: true, marked: true, selectedColor: "#4caf50" };
     return acc;
   }, {} as any);
+  Object.keys(highlightDates).forEach((date) => {
+    if (!markedDates[date]) {
+      markedDates[date] = {
+        marked: true,
+        dotColor: "#3213e6ff",
+        customStyles: {
+          container: {
+            backgroundColor: "#ffe0e6",
+            borderColor: "#3213e6ff",
+            borderWidth: 2,
+          },
+        },
+      };
+    } else {
+      // Se il giorno è sia lavorato che evidenziato, aggiungi un bordo rosa
+      markedDates[date] = {
+        ...markedDates[date],
+        customStyles: { container: { borderColor: "#3213e6ff", borderWidth: 2  }},
+      };
+    }
+  });
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -47,6 +91,7 @@ export default function HomeScreen() {
           firstDay={1}
           onDayPress={handleDayPress}
           markedDates={markedDates}
+          markingType="custom"
           enableSwipeMonths
           current={selectedMonth}
           onMonthChange={(currentMonth: { year: any; month: any }) => {
@@ -70,6 +115,7 @@ export default function HomeScreen() {
             🧾 Imposta Sostitutiva (5%): €
             {monthlyStats.impostaSostitutiva.toFixed(2)}
           </Text>
+
           <Text style={styles.statText}>
             🧾 Contributi INPS (26.07%): €
             {monthlyStats.contributiInps.toFixed(2)}

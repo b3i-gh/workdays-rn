@@ -91,7 +91,7 @@ A mobile application for freelancers to track working days, expenses, and taxes 
    - Use "Export Backup" to save data in JSON format
    - Use "Restore from Backup" to restore data
 
-## Changelog 
+## Changelog
 
 ### v1.1.0
 
@@ -102,6 +102,10 @@ A mobile application for freelancers to track working days, expenses, and taxes 
 - savings can be inserted with decimal values
 - tax savings are now managed separately from the other savings
 - savings now manages many types (long term, short term, etc) and have different target based con the total income
+
+### v1.2.0
+
+- added a feature to track the last worked day of each month, allowing the system to record the date when payment is received
 
 ## Future implementations
 
