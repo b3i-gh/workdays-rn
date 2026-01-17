@@ -1,4 +1,4 @@
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { loadData, STORAGE_KEYS } from "./storage";
 
@@ -6,6 +6,8 @@ export const exportBackup = async () => {
   try {
     const workDays = (await loadData(STORAGE_KEYS.workDays)) ?? {};
     const expenses = (await loadData(STORAGE_KEYS.savings)) ?? [];
+    const invoicePaymentDates =
+      (await loadData(STORAGE_KEYS.invoicePaymentDates)) ?? {};
 
     // Keep all days with their status (worked, vacation, sick)
     const filteredWorkDays = Object.entries(workDays).reduce(
@@ -22,15 +24,14 @@ export const exportBackup = async () => {
       exportedAt: new Date().toISOString(),
       workDays: filteredWorkDays,
       expenses,
+      invoicePaymentDates,
     };
 
     const json = JSON.stringify(backupData, null, 2);
     const fileUri =
       FileSystem.documentDirectory + `workdays-backup-${Date.now()}.json`;
 
-    await FileSystem.writeAsStringAsync(fileUri, json, {
-      encoding: FileSystem.EncodingType.UTF8,
-    });
+    await FileSystem.writeAsStringAsync(fileUri, json);
 
     await Sharing.shareAsync(fileUri);
   } catch (error) {

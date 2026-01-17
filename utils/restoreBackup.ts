@@ -1,5 +1,5 @@
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import type { Saving, WorkDay } from "../contexts/GlobalStateProvider";
 import { clearAllData, saveData, STORAGE_KEYS } from "./storage";
 
@@ -21,7 +21,7 @@ export const restoreBackup = async (
     if (!data || typeof data !== "object")
       throw new Error("Invalid backup format");
 
-    const { workDays, expenses } = data;
+    const { workDays, expenses, invoicePaymentDates } = data;
     console.log("[DEBUG] Restored data:", data);
 
     // Clear all existing data first
@@ -30,6 +30,9 @@ export const restoreBackup = async (
     // Restore the backup data and update global state
     await saveData(STORAGE_KEYS.workDays, workDays);
     await saveData(STORAGE_KEYS.savings, expenses);
+    if (invoicePaymentDates) {
+      await saveData(STORAGE_KEYS.invoicePaymentDates, invoicePaymentDates);
+    }
     onRestore(workDays, expenses);
 
     return true;

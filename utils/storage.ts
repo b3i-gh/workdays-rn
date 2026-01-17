@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const STORAGE_KEYS = {
   workDays: "workDays",
   savings: "expenses",
+  invoicePaymentDates: "invoicePaymentDates",
 };
 
 export const saveData = async (key: string, value: any) => {
