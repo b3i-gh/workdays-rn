@@ -258,6 +258,13 @@ const YearScreen = () => {
                 {formatCurrency(section.totals.net)} | Taxes:{" "}
                 {formatCurrency(section.totals.taxes)}
               </Text>
+              {section.year === 2025 && (
+                <View style={styles.taxInstallments}>
+                  <Text style={styles.sectionFinancials}>
+                    📊 Balance 2025: {formatCurrency(section.totals.taxes * 1.5)} | Advance 2026: {formatCurrency(section.totals.taxes * 0.5)}
+                  </Text>                  
+                </View>
+              )}
               <Text style={styles.collapseIcon}>
                 {collapsedYears.has(section.year) ? "▼" : "▲"}
               </Text>
@@ -372,6 +379,20 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginTop: 2,
     opacity: 0.9,
+  },
+  taxInstallments: {
+    paddingTop: 3,
+  },
+  taxInstallmentsTitle: {
+    fontSize: 11,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 4,
+  },
+  taxInstallmentsText: {
+    fontSize: 11,
+    color: "#fff",
+    opacity: 0.95,
   },
   collapseIcon: {
     position: "absolute",
