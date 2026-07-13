@@ -68,3 +68,4 @@ npm run web
 - Il progetto è stato creato partendo da parti del progetto esistente "workdays - exporouter"
 - Non include lo screen dei savings (rimosso intenzionalmente)
 - Configurato per Android come target principale
+- Aggiornamento del calcolo fiscale: il reddito imponibile in [utils/finance.ts](utils/finance.ts) è stato modificato da 0.78 a 0.67
